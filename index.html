@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Title</title>
+<style>
+.sSwitch{
+	width:100px;height:31px;position:relative;border:1px solid #dfdfdf;background:#fdfdfd;box-shadow:#dfdfdf 0 0 0 0 inset;
+	border-radius:20px;background-clip:content-box;display:inline-block;-webkit-appearance:none;user-select:none;outline:none;
+	overflow:hidden;
+}
+.sSwitch .sSwitch-bar{width:29px;height:29px;position:absolute;top:0;left:0;border-radius:20px;background:#fff;box-shadow:0 1px 3px rgba(0, 0, 0, 0.4);}
+.sSwitch.checked{box-shadow:#64bd63 0 0 0 16px inset;}
+.sSwitch.disabled{}
+.sSwitch.checked.disabled{}
+.sSwitch-pro{background:#64bd63;width:0;height:100%;display:block;}
+</style>
+</head>
+<body>
+
+<span class="sSwitch">
+	<span class="sSwitch-pro"></span>
+	<span class="sSwitch-bar"></span>
+</span>
+
+<script>
+var obj = {
+	left: 0,
+	currentX: 0,
+	newX: 0,
+	bar: null,
+	warpWidth: 0,
+	barWidth: 0,
+	process: null,
+	getCss: function(o,key){
+		return o.currentStyle? o.currentStyle[key] : document.defaultView.getComputedStyle(o,false)[key];
+	}
+};
+
+document.addEventListener('click',function(e){
+	var target = e.target;
+	if(!target || target.nodeType!==1 || target.classList.length===0 || target.classList.contains('sSwitch-bar')) return;
+	if(target.classList.contains('sSwitch')){
+		if(target.classList.contains('disabled')) return;
+	}
+},false);
+document.addEventListener('mousedown',function(e){
+	var target = e.target;
+	if(!target || target.nodeType!==1 || target.classList.length===0) return;
+	if(target.classList.contains('sSwitch-bar')){
+		e.stopPropagation();
+		var bar = target, warp = bar.parentNode;
+		if(warp.classList.contains('disabled')) return;
+		obj.bar = bar, obj.warp = warp, obj.currentX = e.clientX, obj.warpWidth = warp.clientWidth,
+		obj.barWidth = bar.clientWidth, obj.process =  warp.getElementsByTagName('span')[0];
+		if(obj.getCss(bar, 'left') !== 'auto') obj.left = obj.getCss(bar, 'left');
+	}
+},false);
+document.addEventListener('mouseup',function(e){
+	if(obj.bar){
+		if(obj.newX<=(obj.warpWidth-obj.barWidth)/2){
+			obj.bar.style.left = 0;
+			obj.process.style.width = 0;
+			obj.warp.classList.remove('checked');
+			obj.newX = 0;
+			obj.left = 0;
+		}
+		else{
+			obj.bar.style.left = obj.warpWidth - obj.barWidth + 'px';
+			obj.process.style.width = obj.warpWidth + 'px';
+			obj.warp.classList.add('checked');
+			obj.newX = obj.warpWidth - obj.barWidth;
+			obj.left = obj.warpWidth - obj.barWidth;
+		}
+		obj.bar = null;
+	}
+
+},false);
+document.addEventListener('mousemove',function(e){
+	if(obj.bar){
+		var nowX = e.clientX, disX = nowX - obj.currentX, newX = parseInt(obj.left) + disX;
+		if(newX<=0) newX = 0;
+		if(newX>=obj.warpWidth - obj.barWidth) newX = obj.warpWidth - obj.barWidth;
+		obj.newX = newX;
+		obj.bar.style.left = newX + 'px';
+		obj.process.style.width = newX + obj.barWidth/2 + 'px';
+		e.preventDefault && e.preventDefault();
+		return false;
+	}
+},false);
+
+</script>
+</body>
+</html>
