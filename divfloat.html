@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Title</title>
+<style>
+.sSwitch{
+	width:100px;height:31px;position:relative;border:1px solid #dfdfdf;background:#fdfdfd;box-shadow:#dfdfdf 0 0 0 0 inset;
+	border-radius:20px;background-clip:content-box;display:inline-block;-webkit-appearance:none;user-select:none;outline:none;
+	overflow:hidden;
+}
+.sSwitch-scroll{width:200%;float:left;height:100%;}
+.sSwitch-scroll:after{content:'';display: table;clear:both;}
+
+.sSwitch-m{float:left;width:0;height:100%;position: relative;}
+	.sSwitch-bar{width:29px;height:29px;position:absolute;top:0;left:0;margin-left:-14px;border-radius:20px;background:#fff;box-shadow:0 1px 3px rgba(0, 0, 0, 0.4);}
+.sSwitch-l,.sSwitch-r{float:left;width:50%;height:100%;cursor: pointer;}
+.sSwitch-l{margin-left:-100%;background:#dfdfdf;}
+.sSwitch-r{background:transparent;}
+
+.sSwitch.checked{box-shadow:#64bd63 0 0 0 16px inset;}
+.sSwitch.checked .sSwitch-r{background:#fdfdfd;}
+.sSwitch.checked .sSwitch-l,.sSwitch.moving .sSwitch-l{background:#64bd63;}
+.sSwitch.checked .sSwitch-r{background:#64bd63;}
+
+.sSwitch.disabled{cursor:not-allowed;background: rgba(155, 155, 155, 0.4); }
+.sSwitch.disabled.checked{background: rgba(34, 110, 34, 0.3);box-shadow:rgba(34, 110, 34, 0.3) 0 0 0 16px inset; }
+.sSwitch.disabled.checked .sSwitch-l{background: transparent; }
+.sSwitch.disabled .sSwitch-l,.sSwitch.disabled .sSwitch-r{cursor:not-allowed;}
+</style>
+</head>
+<body>
+
+<span class="sSwitch"></span>
+
+<br>
+
+<span class="sSwitch checked" data-change="fun" style="width:300px;"></span>
+
+<script>
+function fun(bloo){console.log(bloo);}
+
+function sSwitch(opt){
+    var mvObj = {
+        check: false,
+        left: 0,
+        warp: { $:null, width:0 },
+        first: null,
+        barWidth: 0
+    };
+    sSwitch.repain();
+    document.addEventListener('click',function(e){
+        var target = e.target;
+        if(!target || target.nodeType!==1 || target.classList.length===0 || target.classList.contains('sSwitch-bar')) return;
+        if(target.classList.contains('sSwitch-l') || target.classList.contains('sSwitch-r')){
+            var sw = target.parentNode.parentNode;
+            if(sw.classList.contains('disabled')) return;
+            var bar = sw.querySelector('.sSwitch-bar');
+            var change = sw.getAttribute('data-change');
+            if(target.classList.contains('sSwitch-l')){
+                target.style.marginLeft = -sw.clientWidth + parseInt(bar.clientWidth/2,10) + 'px';
+                sw.classList.remove('checked');
+                change && eval(change+'(false)');
+			}else{
+                sw.querySelector('.sSwitch-l').style.marginLeft = -parseInt(bar.clientWidth/2,10)-1 + 'px';
+                sw.classList.add('checked');
+                change && eval(change+'(true)');
+			}
+        }
+    },false);
+    document.addEventListener('mousedown',function(e){
+        e.stopPropagation();
+        var target = e.target;
+        if(!target || target.nodeType!==1 || target.classList.length===0) return;
+        if(target.classList.contains('sSwitch-bar')){
+            e.stopPropagation();
+            var $switch = target.parentNode.parentNode.parentNode;
+            if($switch.classList.contains('disabled')) return;
+            mvObj.warp.$ = $switch;
+            mvObj.warp.width = $switch.clientWidth;
+            mvObj.barWidth = target.clientWidth;
+            mvObj.first = target.parentNode.parentNode.getElementsByClassName('sSwitch-l')[0];
+            mvObj.left = parseInt(e.clientX,10);
+            mvObj.check = !!$switch.classList.contains('checked');
+        }
+    },false);
+    document.addEventListener('mouseup',function(e){
+        e.stopPropagation();
+        if(mvObj.warp.$){
+            var x = parseInt(e.clientX - mvObj.left,10), halfbar = parseInt(mvObj.barWidth/2,10), isClose;
+            if(x === 0 || (x<0&&!mvObj.check) || (x>0&&mvObj.check)) return mvObj.first = mvObj.warp.$ = null;
+            if(x<0){
+                if(halfbar + x <= -(mvObj.warp.width-mvObj.barWidth)/2) isClose = true;
+            }else{
+                if(x - mvObj.warp.width + halfbar <= -(mvObj.warp.width-mvObj.barWidth)/2) isClose = true;
+            }
+            mvObj.warp.$.classList.remove('moving');
+            var change = mvObj.warp.$.getAttribute('data-change');
+            if(isClose){
+                mvObj.first.style.marginLeft = halfbar-mvObj.warp.width + 'px';
+                mvObj.warp.$.classList.remove('checked');
+                mvObj.check && change && eval(change+'(false)');
+            }else{
+                mvObj.first.style.marginLeft = -halfbar-1 + 'px';
+                mvObj.warp.$.classList.add('checked');
+                !mvObj.check && change && eval(change+'(true)');
+            }
+            return mvObj.warp.$ = mvObj.first = null;
+        }
+    },false);
+    document.addEventListener('mousemove',function(e){
+        e.stopPropagation();
+        e.preventDefault();
+        if(mvObj.warp.$){
+            mvObj.warp.$.classList.remove('checked');
+            mvObj.warp.$.classList.add('moving');
+            var x, halfbar = parseInt(mvObj.barWidth/2,10);
+            if(mvObj.check) x = parseInt(e.clientX - mvObj.left,10);
+            else x = parseInt(e.clientX - mvObj.left - mvObj.warp.width,10);
+            if(x<=halfbar-mvObj.warp.width){
+                x = halfbar-mvObj.warp.width;
+                mvObj.warp.$.classList.remove('moving');
+            }
+            if(x>=-halfbar-1){
+                x = -halfbar-1;
+                mvObj.warp.$.classList.remove('moving');
+                mvObj.warp.$.classList.add('checked');
+            }
+            mvObj.first.style.marginLeft = x  + 'px';
+            return false;
+        }
+    },false);
+}
+sSwitch.repain = function(){
+    document.querySelectorAll('.sSwitch').forEach(function(v,i){
+        var str = '\
+        <span class="sSwitch-scroll">\n\
+			<span class="sSwitch-l"></span>\n\
+			<span class="sSwitch-m"><span class="sSwitch-bar"></span></span>\n\
+			<span class="sSwitch-r"></span>\n\
+		</span>';
+        v.innerHTML = str;
+        var w = v.querySelector('.sSwitch-bar').clientWidth;
+        var offset = v.classList.contains('checked') ? -w/2 : parseInt(w/2,10) - v.clientWidth;
+        v.querySelector('.sSwitch-l').style.marginLeft = offset + 'px';
+    });
+};
+sSwitch();
+
+//for 动态dom
+var s = document.createElement('span');
+s.className = 'sSwitch';
+document.body.appendChild(s);
+sSwitch.repain();
+
+</script>
+</body>
+</html>
