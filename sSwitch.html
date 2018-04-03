@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="format-detection" content="telephone=no, email=no, adress=no">
+    <title>sSwitch</title>
+    <link rel="stylesheet" href="./sSwitch.css">
+</head>
+<body>
+    <p>sSwitch:</p>
+    <span class="sSwitch" data-open="开" data-close="关"></span>
+    <span class="sSwitch disabled" style="width:60px;"></span>
+    <br>
+    <span class="sSwitch checked" data-change="fun" style="width:300px;"></span>
+    <div id="warp"></div>
+
+    <br>
+    <button>动态创建</button>
+    <button>解绑</button>
+    <button>绑定</button>
+    <br><br>
+    <button>第二个：禁用</button>
+    <button>第二个：取消禁用</button>
+    <br><br>
+    <button>第三个：选中</button>
+    <button>第三个：取消选中</button>
+
+    <script src="./sSwitch.js"></script>
+    <script>
+        //run
+        sSwitch.reg().repain();
+
+        //btns:选中状态切换、禁用状态切换
+        document.querySelectorAll('button')[3].addEventListener('click',function(){
+            document.querySelectorAll('.sSwitch')[1].setDisabled(true);
+        });
+        document.querySelectorAll('button')[4].addEventListener('click',function(){
+            document.querySelectorAll('.sSwitch')[1].setDisabled(false);
+        });
+        document.querySelectorAll('button')[5].addEventListener('click',function(){
+            document.querySelectorAll('.sSwitch')[2].setChecked(true,true);
+        });
+        document.querySelectorAll('button')[6].addEventListener('click',function(){
+            document.querySelectorAll('.sSwitch')[2].setChecked(false,true);
+        });
+        //btns：注册绑定、解绑
+        document.querySelectorAll('button')[1].addEventListener('click',function(){
+            sSwitch.reg(false);
+        },false);
+        document.querySelectorAll('button')[2].addEventListener('click',function(){
+            sSwitch.reg();
+        },false);
+        //for 动态dom
+        document.querySelectorAll('button')[0].addEventListener('click',function(){
+            var warp = document.getElementById('warp');
+            var anotherSwitch = document.createElement('span');
+            anotherSwitch.className = 'sSwitch';
+            anotherSwitch.setAttribute('name','control_9');
+            warp.appendChild(anotherSwitch);
+            warp.appendChild(document.createElement('br'));
+            sSwitch.repain(warp,true);
+        },false);
+
+        function fun(bloo) {console.log(bloo);}
+    </script>
+</body>
+</html>
