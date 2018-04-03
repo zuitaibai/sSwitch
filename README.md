@@ -20,11 +20,11 @@ use:  <span class="sSwitch"></span>
 ```
 ---------------------------------------------
 ```
- 1.onchange: <span class="sSwitch" data-change="函数名">              //function 函数名(boolean){ console.log(boolean) }
+ 1.onchange: <span class="sSwitch" data-change="函数名"></span>               //function 函数名(boolean){ console.log(boolean) }
 
  2.开关label文字：<span class="sSwitch" data-open="开" data-close="关"></span>
 
- 3.创建同名input:hidden：<span class="sSwitch" name="inputName名">    //input:value：1:checked   0:unchecked
+ 3.创建同名input:hidden：<span class="sSwitch" name="inputName名"></span>     //input:value：1:checked   0:unchecked
 
        sSwitch.repain(true)
 
@@ -36,7 +36,7 @@ use:  <span class="sSwitch"></span>
 
  6.动态切换选中状态：<span class="sSwitch" id="eg"></span>
 
-       document.getElementById('eg').setChecked(true,true);            //是否选中,是否触发其onchange
+       document.getElementById('eg').setChecked(true,true);                   //是否选中,是否触发其onchange
 
  7.动态切换禁用状态：<span class="sSwitch" id="eg"></span>
 
