@@ -32,3 +32,7 @@
 .sSwitch.disabled.checked .sSwitch-r{background:transparent;}
 .sSwitch.disabled .sSwitch-l,
 .sSwitch.disabled .sSwitch-r{cursor:not-allowed;}
+.sSwitch.moving,
+.sSwitch .sSwitch-bar:active,
+.sSwitch.moving .sSwitch-l,
+.sSwitch.moving .sSwitch-r{cursor:col-resize;}
