@@ -2,11 +2,11 @@
 
 ---[git@github.com:zuitaibai/sSwitch.git](git@github.com:zuitaibai/sSwitch.git)
 
-v1.1
+v1.1.1
 
 pic:  
 ![pic](https://gitee.com/uploads/images/2018/0404/163149_603ef890_97818.jpeg "pic.jpg")
-
+;![pic](https://github.com/zuitaibai/sSwitch/blob/master/pic.jpg "pic.jpg")
 
 event delegate on document，even for live Dom  
 兼容pc、移动，不依赖外部库。在window下暴露sSwitch对象。没做commonjs、requirejs兼容。by zuitaibai 2018/4/2
@@ -57,3 +57,4 @@ use:  <span class="sSwitch"></span>
 - v 1.1
     - 解决手动setChecked时，同状态下还触发onchange的bug
     - 代码初步整理
+    - v1.1.1 加入函数节流
