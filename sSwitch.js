@@ -32,33 +32,37 @@
             hideInput: null
         },
         tool = {
-            isSupportTouch: "ontouchend" in document,
+            isSupportTouch: 'ontouchend' in document,
             getEvent: function (e) {return tool.isSupportTouch ? e.changedTouches[0] : e;},
+            callStrFun: function(strFun,arg){
+                var f;
+                if(typeof(window[strFun]) === 'function') window[strFun](arg);
+                else f = eval(strFun), f(arg);
+            },
             setChecked: function(dom,boolean,ifFireChange){
-                var bar = dom.querySelector('.sSwitch-bar'),
-                    switchL = dom.querySelector('.sSwitch-l'),
+                var oldChecked = dom.classList.contains('checked');
+                if((boolean && oldChecked) || (!boolean && !oldChecked)) return;
+                var barHalfW = parseInt(dom.querySelector('.sSwitch-bar').clientWidth / 2, 10),
                     change = dom.getAttribute('data-change'),
-                    hideInput = dom.querySelector('input[type=hidden]');
-                if(boolean){
-                    switchL.style.marginLeft = -parseInt(bar.clientWidth / 2, 10) - 1 + 'px';
-                    dom.classList.add('checked');
-                    ifFireChange && change && eval(change + '(true)');
-                    if(hideInput) hideInput.value = 1;
-                }else{
-                    switchL.style.marginLeft = -dom.clientWidth + parseInt(bar.clientWidth / 2, 10) + 'px';
-                    dom.classList.remove('checked');
-                    ifFireChange && change && eval(change + '(false)');
-                    if(hideInput) hideInput.value = 0;
-                }
+                    hideInput = dom.querySelector('input[type=hidden]'),
+                    mLeft = 0,
+                    classMethod = '';
+                if(boolean) mLeft = -barHalfW, classMethod = 'add';
+                else mLeft = -dom.clientWidth + barHalfW,  classMethod = 'remove';
+                dom.querySelector('.sSwitch-l').style.marginLeft = mLeft + 'px';
+                dom.classList[classMethod]('checked');
+                ifFireChange && change && tool.callStrFun(change,!!boolean);
+                if(hideInput) hideInput.value = +!!boolean;
             }
         },
         bd_click = function (e) {
             var target = e.target;
             if (!target || target.nodeType !== 1 || target.classList.length === 0 || target.classList.contains('sSwitch-bar')) return;
-            if (target.classList.contains('sSwitch-l') || target.classList.contains('sSwitch-r')) {
+            var targetClassList = target.classList;
+            if (targetClassList.contains('sSwitch-l') || targetClassList.contains('sSwitch-r')) {
                 var sw = target.parentNode.parentNode;
                 if (sw.classList.contains('disabled')) return;
-                tool.setChecked(sw,!target.classList.contains('sSwitch-l'),true);
+                tool.setChecked(sw,!targetClassList.contains('sSwitch-l'),true);
             }
         },
         bd_msDown = function (e) {
@@ -89,17 +93,17 @@
                     if (x - mvObj.warp.width + halfbar <= -(mvObj.warp.width - mvObj.barWidth) / 2) isClose = true;
                 }
                 mvObj.warp.$.classList.remove('moving');
-                var change = mvObj.warp.$.getAttribute('data-change');
-                if (isClose) {
-                    mvObj.first.style.marginLeft = halfbar - mvObj.warp.width + 'px';
-                    mvObj.warp.$.classList.remove('checked');
-                    mvObj.check && change && eval(change + '(false)');
-                    if(mvObj.hideInput) mvObj.hideInput.value = 0;
-                } else {
-                    mvObj.first.style.marginLeft = -halfbar - 1 + 'px';
-                    mvObj.warp.$.classList.add('checked');
-                    !mvObj.check && change && eval(change + '(true)');
-                    if(mvObj.hideInput) mvObj.hideInput.value = 1;
+                var change = mvObj.warp.$.getAttribute('data-change'),
+                    mleft = 0,
+                    classMethod = '';
+                if (isClose) mleft = halfbar - mvObj.warp.width, classMethod = 'remove';
+                else mleft = -halfbar, classMethod = 'add';
+                mvObj.first.style.marginLeft = mleft + 'px';
+                mvObj.warp.$.classList[classMethod]('checked');
+                if(mvObj.hideInput) mvObj.hideInput.value = +!isClose;
+                if(change){
+                    isClose && mvObj.check && tool.callStrFun(change,false);
+                    !isClose && !mvObj.check && tool.callStrFun(change,true);
                 }
                 return mvObj.warp.$ = mvObj.first = mvObj.hideInput = null;
             }
@@ -108,20 +112,14 @@
             e.stopPropagation();
             e.preventDefault();
             if (mvObj.warp.$) {
-                mvObj.warp.$.classList.remove('checked');
-                mvObj.warp.$.classList.add('moving');
+                var classList = mvObj.warp.$.classList;
+                classList.remove('checked');
+                classList.add('moving');
                 var x, halfbar = parseInt(mvObj.barWidth / 2, 10);
                 if (mvObj.check) x = parseInt(tool.getEvent(e).clientX - mvObj.left, 10);
                 else x = parseInt(tool.getEvent(e).clientX - mvObj.left - mvObj.warp.width, 10);
-                if (x <= halfbar - mvObj.warp.width) {
-                    x = halfbar - mvObj.warp.width;
-                    mvObj.warp.$.classList.remove('moving');
-                }
-                if (x >= -halfbar - 1) {
-                    x = -halfbar - 1;
-                    mvObj.warp.$.classList.remove('moving');
-                    mvObj.warp.$.classList.add('checked');
-                }
+                if (x <= halfbar - mvObj.warp.width) classList.remove('moving'), x = halfbar - mvObj.warp.width;
+                if (x >= -halfbar) classList.remove('moving'), classList.add('checked'), x = -halfbar;
                 mvObj.first.style.marginLeft = x + 'px';
                 return false;
             }
@@ -156,7 +154,7 @@
                 if(ifHI) str += '<input type="hidden" name="'+name+'" '+value+'>';
                 v.innerHTML = str;
                 var w = v.querySelector('.sSwitch-bar').clientWidth,
-                    offset = v.classList.contains('checked') ? -parseInt(w / 2, 10)-1 : parseInt(w / 2, 10) - v.clientWidth;
+                    offset = v.classList.contains('checked') ? -parseInt(w / 2, 10) : parseInt(w / 2, 10) - v.clientWidth;
                 v.querySelector('.sSwitch-l').style.marginLeft = offset + 'px';
                 v.setChecked = function(boolean,ifFireChange){ tool.setChecked(v,boolean,ifFireChange); };
                 v.setDisabled = function(boolean){ v.classList[boolean?'add':'remove']('disabled'); };

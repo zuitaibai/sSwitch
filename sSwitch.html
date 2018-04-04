@@ -6,16 +6,16 @@
     <meta name="format-detection" content="telephone=no, email=no, adress=no">
     <title>sSwitch</title>
     <link rel="stylesheet" href="./sSwitch.css">
+    <style>button{padding:5px 10px;font-weight:bold;margin-right:10px;}</style>
 </head>
 <body>
     <p>sSwitch:</p>
-    <span class="sSwitch" data-open="开" data-close="关"></span>
+    <span class="sSwitch" data-open="开了" data-close="关了"></span>
     <span class="sSwitch disabled" style="width:60px;"></span>
     <br>
     <span class="sSwitch checked" data-change="fun" style="width:300px;"></span>
-    <div id="warp"></div>
 
-    <br>
+    <br><br>
     <button>动态创建</button>
     <button>解绑</button>
     <button>绑定</button>
@@ -25,6 +25,9 @@
     <br><br>
     <button>第三个：选中</button>
     <button>第三个：取消选中</button>
+    <br><br>
+
+    <div id="warp"></div>
 
     <script src="./sSwitch.js"></script>
     <script>

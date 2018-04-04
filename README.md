@@ -1,8 +1,8 @@
 # sSwitch
 
----git@github.com:zuitaibai/sSwitch.git
+---[git@github.com:zuitaibai/sSwitch.git](git@github.com:zuitaibai/sSwitch.git)
 
-v1.0
+v1.1
 
 
 event delegate on document，even for live Dom  
@@ -46,3 +46,11 @@ use:  <span class="sSwitch"></span>
 
  8.解绑： sSwitch.reg(false)
  ```
+
+
+### Changelog
+
+
+- v 1.1
+    - 解决手动setChecked时，同状态下还触发onchange的bug
+    - 代码初步整理
