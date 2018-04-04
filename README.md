@@ -4,13 +4,6 @@
 
 v1.1
 
-<link rel="stylesheet" href="https://github.com/zuitaibai/sSwitch/blob/master/sSwitch.css">
-<script src="https://github.com/zuitaibai/sSwitch/blob/master/sSwitch.js"></script>			
-<span class="sSwitch" data-open="开了" data-close="关了"></span>
-<script>
-sSwitch.reg().repain();
-</script>
-
 event delegate on document，even for live Dom  
 兼容pc、移动，不依赖外部库。在window下暴露sSwitch对象。没做commonjs、requirejs兼容。by zuitaibai 2018/4/2
 
