@@ -55,6 +55,7 @@
                 if(hideInput) hideInput.value = +!!boolean;
             }
         },
+        timer,
         bd_click = function (e) {
             var target = e.target;
             if (!target || target.nodeType !== 1 || target.classList.length === 0 || target.classList.contains('sSwitch-bar')) return;
@@ -111,18 +112,21 @@
         bd_msMove = function (e) {
             e.stopPropagation();
             e.preventDefault();
+            clearTimeout(timer);
             if (mvObj.warp.$) {
-                var classList = mvObj.warp.$.classList;
-                classList.remove('checked');
-                classList.add('moving');
-                var x, halfbar = parseInt(mvObj.barWidth / 2, 10);
-                if (mvObj.check) x = parseInt(tool.getEvent(e).clientX - mvObj.left, 10);
-                else x = parseInt(tool.getEvent(e).clientX - mvObj.left - mvObj.warp.width, 10);
-                if (x <= halfbar - mvObj.warp.width) classList.remove('moving'), x = halfbar - mvObj.warp.width;
-                if (x >= -halfbar) classList.remove('moving'), classList.add('checked'), x = -halfbar;
-                mvObj.first.style.marginLeft = x + 'px';
-                return false;
+                timer = setTimeout(function () {
+                    var classList = mvObj.warp.$.classList;
+                    classList.remove('checked');
+                    classList.add('moving');
+                    var x, halfbar = parseInt(mvObj.barWidth / 2, 10);
+                    if (mvObj.check) x = parseInt(tool.getEvent(e).clientX - mvObj.left, 10);
+                    else x = parseInt(tool.getEvent(e).clientX - mvObj.left - mvObj.warp.width, 10);
+                    if (x <= halfbar - mvObj.warp.width) classList.remove('moving'), x = halfbar - mvObj.warp.width;
+                    if (x >= -halfbar) classList.remove('moving'), classList.add('checked'), x = -halfbar;
+                    mvObj.first.style.marginLeft = x + 'px';
+                },0);
             }
+            return false;
         },
         reg = function (_if) { // true或不传：绑定 ,  false：解绑
             var _if = _if === false ? _if : true, method;
