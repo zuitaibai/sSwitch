@@ -84,6 +84,7 @@
             }
         },
         bd_msUp = function (e) {
+            clearTimeout(timer);
             e.stopPropagation();
             if (mvObj.warp.$) {
                 var x = parseInt(tool.getEvent(e).clientX - mvObj.left, 10), halfbar = parseInt(mvObj.barWidth / 2, 10), isClose;
