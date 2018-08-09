@@ -5,7 +5,7 @@
 v1.1.1
 
 pic:  
-;![pic](https://gitee.com/uploads/images/2018/0404/163149_603ef890_97818.jpeg "pic.jpg")
+<!-- ![pic](https://gitee.com/uploads/images/2018/0404/163149_603ef890_97818.jpeg "pic.jpg") -->
 ![pic](https://github.com/zuitaibai/sSwitch/blob/master/pic.jpg "pic.jpg")
 
 event delegate on document，even for live Dom  
